@@ -4,7 +4,7 @@ import countryCardTemplate from './templates/country_card.hbs';
 import countryTemplate from './templates/country.hbs';
 import { fetchCountries } from './fetchCountries';
 
-import { Info, Failure } from '../node_modules/notiflix/src/notiflix';
+import Notiflix from 'notiflix';
 
 const DEBOUNCE_DELAY = 300;
 
@@ -46,9 +46,9 @@ function renderCountryCard(card) {
 }
 
 function alarmToMuchCountries(arr) {
-  console.log(55555555555555555);
+  Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
 }
 
 function alarmBullShit(arr) {
-  console.log(666666666666666);
+  Notiflix.Notify.failure('Oops, there is no country with that name, buy the globe');
 }
