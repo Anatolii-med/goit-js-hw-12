@@ -6,10 +6,12 @@ import { fetchCountries } from './fetchCountries';
 
 import Notiflix from 'notiflix';
 
+const manyMessage = 'Too many matches found. Please enter a more specific name.';
+const oopsMmessage = 'Oops, there is no country with that name, buy the globe';
+
 const DEBOUNCE_DELAY = 300;
 
 const findCountryField = document.querySelector('#search-box');
-const countryCardInfo = document.querySelector('.country-info');
 const countryListArea = document.querySelector('.country-list');
 
 findCountryField.addEventListener('input', debounce(onInputCountryName, DEBOUNCE_DELAY));
@@ -19,36 +21,24 @@ function onInputCountryName(event) {
   fetchCountries(inp)
     .then(countries => {
       if (countries.length > 10) {
-        countryCardInfo.innerHTML = '';
-        countryListArea.innerHTML = '';
-        alarmToMuchCountries();
+        addMessage('info', manyMessage);
       }
 
       if (countries.length === 1) {
-        countryListArea.innerHTML = '';
-        renderCountryCard(countries);
+        renderCountry(countryCardTemplate(countries));
       }
 
       if (countries.length >= 2 && countries.length <= 10) {
-        countryCardInfo.innerHTML = '';
-        renderCountryList(countries);
+        renderCountry(countryTemplate(countries));
       }
     })
-    .catch(error => alarmBullShit());
+    .catch(error => addMessage('failure', oopsMmessage));
 }
 
-function renderCountryList(list) {
-  countryListArea.innerHTML = countryTemplate(list);
+function renderCountry(markup = '') {
+  countryListArea.innerHTML = markup;
 }
 
-function renderCountryCard(card) {
-  countryCardInfo.innerHTML = countryCardTemplate(card);
-}
-
-function alarmToMuchCountries(arr) {
-  Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
-}
-
-function alarmBullShit(arr) {
-  Notiflix.Notify.failure('Oops, there is no country with that name, buy the globe');
+function addMessage(typeMessage, message) {
+  Notiflix.Notify[typeMessage](message);
 }
